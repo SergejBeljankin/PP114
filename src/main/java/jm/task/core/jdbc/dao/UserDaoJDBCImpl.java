@@ -21,9 +21,11 @@ public class UserDaoJDBCImpl implements UserDao {
     private final String CLEAN_TABLE ="TRUNCATE TABLE `pre_project`.`user_dao`;";
     private final String SELECT_FROM = "SELECT * FROM `pre_project`.`user_dao`;";
     private final String DELETE_ROW = "DELETE FROM `pre_project`.`user_dao` WHERE `id_table` = ?";
+
     public UserDaoJDBCImpl() {
         connectUSER = Util.getConnection();
     }
+
     @Override
     public void createUsersTable() {
         try(Statement statement = connectUSER.createStatement()){

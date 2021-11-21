@@ -3,6 +3,8 @@ package jm.task.core.jdbc;
 import jm.task.core.jdbc.dao.UserDao;
 import jm.task.core.jdbc.dao.UserDaoJDBCImpl;
 import jm.task.core.jdbc.model.User;
+import jm.task.core.jdbc.service.UserService;
+import jm.task.core.jdbc.service.UserServiceImpl;
 import jm.task.core.jdbc.util.Util;
 
 import java.sql.Connection;
@@ -14,16 +16,17 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        UserDao userDao = new UserDaoJDBCImpl();
-        userDao.createUsersTable();
-        userDao.saveUser("Ivan", "Petrov", (byte) 32);
-        userDao.saveUser("Ivan", "Ivanov", (byte) 35);
-        userDao.saveUser("Peter", "Sidorov", (byte) 44);
-        userDao.saveUser("Sidr", "Kuznetsov", (byte) 48);
+        UserService userService = new UserServiceImpl();
+        userService.createUsersTable();
 
-        List<User> userList = userDao.getAllUsers();
+        userService.saveUser("Ivan", "Petrov", (byte) 32);
+        userService.saveUser("Ivan", "Ivanov", (byte) 35);
+        userService.saveUser("Peter", "Sidorov", (byte) 44);
+        userService.saveUser("Sidr", "Kuznetsov", (byte) 48);
 
-        userDao.cleanUsersTable();
-        userDao.dropUsersTable();
+        List<User> userList = userService.getAllUsers();
+
+        userService.cleanUsersTable();
+        userService.dropUsersTable();
     }
 }
