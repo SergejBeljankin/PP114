@@ -10,26 +10,20 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
     private Connection connectUSER;
-    private final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS `pre_project`.`user_dao` (\n" +
-            "  `id_table` INT NOT NULL AUTO_INCREMENT,\n" +
-            "  `name` VARCHAR(45) NOT NULL,\n" +
-            "  `lastname` VARCHAR(45) NULL,\n" +
-            "  `age` INT NOT NULL,\n" +
-            "  PRIMARY KEY (`id_table`));";
-    private final String DROP_TABLE = "DROP TABLE IF EXISTS `pre_project`.`user_dao`;";
-    private final String INSERT_INTO = "INSERT INTO `pre_project`.`user_dao` VALUES(?,?,?,?);";
-    private final String CLEAN_TABLE ="TRUNCATE TABLE `pre_project`.`user_dao`;";
-    private final String SELECT_FROM = "SELECT * FROM `pre_project`.`user_dao`;";
-    private final String DELETE_ROW = "DELETE FROM `pre_project`.`user_dao` WHERE `id_table` = ?";
 
     public UserDaoJDBCImpl() {
-        connectUSER = Util.getConnection();
+//        connectUSER = Util.getConnection();
     }
 
     @Override
     public void createUsersTable() {
         try(Statement statement = connectUSER.createStatement()){
-            statement.execute(CREATE_TABLE);
+            statement.execute("CREATE TABLE IF NOT EXISTS `pre_project`.`user_dao` (\n" +
+                    "  `id_table` INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  `name` VARCHAR(45) NOT NULL,\n" +
+                    "  `lastname` VARCHAR(45) NULL,\n" +
+                    "  `age` INT NOT NULL,\n" +
+                    "  PRIMARY KEY (`id_table`));");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             System.out.printf("Ошибка при создании таблицы");
@@ -38,7 +32,7 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public void dropUsersTable() {
         try(Statement statement = connectUSER.createStatement()){
-            statement.execute(DROP_TABLE);
+            statement.execute("DROP TABLE IF EXISTS `pre_project`.`user_dao`;");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             System.out.printf("Ошибка при удалении таблицы");
@@ -46,7 +40,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        try(PreparedStatement preparedStatement = connectUSER.prepareStatement(INSERT_INTO)){
+        try(PreparedStatement preparedStatement = connectUSER
+                .prepareStatement("INSERT INTO `pre_project`.`user_dao` VALUES(?,?,?,?);")){
 
             preparedStatement.setInt(1, 0);
             preparedStatement.setString(2, name);
@@ -63,7 +58,8 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public void removeUserById(long id) {
 
-        try( PreparedStatement prStatement = connectUSER.prepareStatement(DELETE_ROW)) {
+        try( PreparedStatement prStatement = connectUSER
+                .prepareStatement("DELETE FROM `pre_project`.`user_dao` WHERE `id_table` = ?;")) {
             prStatement.setInt(1, (int) id);
             prStatement.executeUpdate();
         } catch (SQLException throwables) {
@@ -76,7 +72,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> allUsers = new ArrayList<>();
         try(
-            PreparedStatement pStatement = connectUSER.prepareStatement(SELECT_FROM);
+            PreparedStatement pStatement = connectUSER
+                    .prepareStatement("SELECT * FROM `pre_project`.`user_dao`;");
             ResultSet rs = pStatement.executeQuery();){
             while (rs.next()){
                 long id = rs.getInt(1);
@@ -98,7 +95,7 @@ public class UserDaoJDBCImpl implements UserDao {
     @Override
     public void cleanUsersTable() {
         try(Statement statement = connectUSER.createStatement()){
-            statement.execute(CLEAN_TABLE);
+            statement.execute("TRUNCATE TABLE `pre_project`.`user_dao`;");
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             System.out.printf("Ошибка очистке таблицы");

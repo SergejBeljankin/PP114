@@ -17,6 +17,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         UserService userService = new UserServiceImpl();
+
         userService.createUsersTable();
 
         userService.saveUser("Ivan", "Petrov", (byte) 32);
@@ -27,6 +28,8 @@ public class Main {
         List<User> userList = userService.getAllUsers();
 
         userService.cleanUsersTable();
-        userService.dropUsersTable();
+//        userService.dropUsersTable();
+
+
     }
 }
